@@ -1,5 +1,5 @@
 """
-model.py: Get Model
+Model: Get Model
 """
 import tensorflow as tf
 import keras
