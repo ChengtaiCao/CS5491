@@ -6,7 +6,7 @@ import argparse
 import numpy as np
 
 from model import *
-from data_loader import *
+from mixup import *
 from tensorflow.keras.callbacks import ReduceLROnPlateau
 
 
@@ -58,19 +58,40 @@ if __name__ == "__main__":
         min_lr=0.00001
     )
 
-    # Batch Generators
-    batch_size = 64
-    train_generator = GTZANGenerator(splited_train_x, splited_train_y, aug_flag=aug_flag)
-    steps_per_epoch = np.ceil(len(splited_train_x)/batch_size)
-    validation_generator = GTZANGenerator(splited_validation_x, splited_validation_y)
-    validation_steps = np.ceil(len(splited_validation_x)/batch_size)
-
+    BATCH_SIZE = 64
+    # BatchDataset 
+    
+    if not aug_flag:
+        # No augmentation
+        train_ds = (
+            tf.data.Dataset.from_tensor_slices((splited_train_x, splited_train_y))
+            .batch(BATCH_SIZE)
+        )
+    else:
+        # Mixup augmentation
+        train_ds_one = (
+            tf.data.Dataset.from_tensor_slices((splited_train_x, splited_train_y))
+            .shuffle(BATCH_SIZE * 100)
+            .batch(BATCH_SIZE)
+        )
+        train_ds_two = (
+            tf.data.Dataset.from_tensor_slices((splited_train_x, splited_train_y))
+            .shuffle(BATCH_SIZE * 100)
+            .batch(BATCH_SIZE)
+        )
+        train_ds_origin = tf.data.Dataset.zip((train_ds_one, train_ds_two))
+        train_ds = train_ds_origin.map(
+            lambda ds_one, ds_two: mixup(ds_one, ds_two, alpha=0.2), num_parallel_calls=AUTO
+        )
+        
+    validation_ds = (
+        tf.data.Dataset.from_tensor_slices((splited_validation_x, splited_validation_y))
+        .batch(BATCH_SIZE)
+    )
     # Train
-    hist = model.fit_generator(
-        train_generator,
-        steps_per_epoch=steps_per_epoch,
-        validation_data=validation_generator,
-        validation_steps=validation_steps,
+    hist = model.fit(
+        train_ds,
+        validation_data=validation_ds,
         epochs=200,
         verbose=1,
         callbacks=[reduceLROnPlat])
@@ -80,4 +101,4 @@ if __name__ == "__main__":
     model.save(SAVE_PATH)
     # Test
     score = model.evaluate(test_x, test_y, verbose=0)
-    print(f"CNN mean accuracy with {args.aug}: {score[1]:.4f}")
+    print(f"CNN mean accuracy {str_text}: {score[1]:.4f}")
