@@ -27,7 +27,7 @@ def conv_block(num_filter, dropout=0.5):
     return conv_layer
 
 
-def get_model(input_shape, class_num, dropout=0.5):
+def get_model(input_shape, class_num, dropout=0.25):
     """
     Get Model
     Parameters:
@@ -48,8 +48,8 @@ def get_model(input_shape, class_num, dropout=0.5):
         conv_block(256),
         Flatten(),
         Dropout(dropout),
-        Dense(512, activation='relu'),
+        Dense(512, activation='relu', kernel_regularizer=tf.keras.regularizers.l2(0.02)),
         Dropout(dropout),
-        Dense(class_num, activation='softmax')
+        Dense(class_num, activation='softmax', kernel_regularizer=tf.keras.regularizers.l2(0.02))
     ])
     return model

@@ -50,7 +50,7 @@ if __name__ == "__main__":
     reduceLROnPlat = ReduceLROnPlateau(
         monitor='val_loss', 
         factor=0.9,
-        patience=5,
+        patience=3,
         verbose=1,
         mode='min',
         min_delta=0.0001,
