@@ -2,3 +2,6 @@ sklearn
 librosa
 tersorflow
 argparse
+matplotlib
+pandas
+seaborn
