@@ -43,19 +43,19 @@ if __name__ == "__main__":
     input_shape = train_x[0].shape
     model = get_model(input_shape, NUM_CLASS)
     model.compile(loss=tf.keras.losses.categorical_crossentropy,
-                optimizer=tf.keras.optimizers.Adam(),
+                optimizer=tf.keras.optimizers.Adam(learning_rate=0.001),
                 metrics=['accuracy'])
 
     # Reduce learning rate when a metric has stopped improving.
     reduceLROnPlat = ReduceLROnPlateau(
         monitor='val_loss', 
-        factor=0.95,
+        factor=0.9,
         patience=5,
         verbose=1,
         mode='min',
-        min_delta=0.001,
+        min_delta=0.0001,
         cooldown=2,
-        min_lr=0.00005
+        min_lr=0.00001
     )
 
     # Batch Generators
@@ -71,7 +71,7 @@ if __name__ == "__main__":
         steps_per_epoch=steps_per_epoch,
         validation_data=validation_generator,
         validation_steps=validation_steps,
-        epochs=1,
+        epochs=200,
         verbose=1,
         callbacks=[reduceLROnPlat])
 
