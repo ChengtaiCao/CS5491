@@ -1,0 +1,7 @@
+KNN: mean accuracy: 0.2730
+KNN + PCA: mean accuracy: 0.2756
+LR: mean accuracy: 0.3274
+SVM: mean accuracy: 0.3662
+MLP: mean accuracy: 0.4597
+CNN mean accuracy without aug: 0.7352
+CNN mean accuracy with aug: 0.7585

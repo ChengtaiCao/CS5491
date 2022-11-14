@@ -58,7 +58,7 @@ if __name__ == "__main__":
         min_lr=0.00001
     )
 
-    BATCH_SIZE = 64
+    BATCH_SIZE = 128
     # BatchDataset 
     
     if not aug_flag:
