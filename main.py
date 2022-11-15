@@ -4,10 +4,12 @@ Main Function
 import pickle
 import argparse
 import numpy as np
+import pdb
 
 from model import *
 from mixup import *
 from tensorflow.keras.callbacks import ReduceLROnPlateau
+from matplotlib import pyplot as plt
 
 
 if __name__ == "__main__":
@@ -89,16 +91,36 @@ if __name__ == "__main__":
         .batch(BATCH_SIZE)
     )
     # Train
-    hist = model.fit(
+    history = model.fit(
         train_ds,
         validation_data=validation_ds,
         epochs=200,
         verbose=1,
         callbacks=[reduceLROnPlat])
-
     # Save Model
     SAVE_PATH = "model.h5"
     model.save(SAVE_PATH)
     # Test
     score = model.evaluate(test_x, test_y, verbose=0)
     print(f"CNN mean accuracy {str_text}: {score[1]:.4f}")
+
+    plt.figure(figsize=(15,7))
+
+    plt.subplot(1,2,1)
+    plt.plot(history.history['accuracy'], label='train')
+    plt.plot(history.history['val_accuracy'], label='validation')
+    plt.title('Accuracy')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.legend()
+
+    plt.subplot(1,2,2)
+    plt.plot(history.history['loss'], label='train')
+    plt.plot(history.history['val_loss'], label='validation')
+    plt.title('Loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.show()
