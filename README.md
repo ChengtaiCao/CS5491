@@ -1,10 +1,24 @@
-CS5491
+# HomeWork 2 -- GTZAN Music Genre Classification
 
-# Step 0: Dependency
-conda create -n CS5491 python=3.9  
-conda activate CS5491  
-pip install -r requirement.txt  
+This repo provides an implementation of CS5491 Programming Homework 2 (City University of Hong Kong) -- TZAN Music Genre Classification
 
+## Datasets
+The datasets are provided by [Kaggle](https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification).
+
+## Experimental Dependency (python)
+```shell
+# create virtual environment
+conda create --name=CS5491 python=3.9
+
+# activate virtual environment
+conda activate CS5491
+
+# install dependencies
+pip install -r requirements.txt
+```
+
+## Usage
+```shell
 # Step 1: Generate data
 python data_extractor.py
 
@@ -19,3 +33,4 @@ python main.py --aug 1
 
 # Step 5: Confusion Matrix
 python test.py
+```
